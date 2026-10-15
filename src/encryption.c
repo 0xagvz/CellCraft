@@ -91,7 +91,11 @@ void LoginC2S_encryption_response()
     }
     readBuffer((char *)encrypted, sizeof(encrypted));
     if (readFailed()) return;
+#if MBEDTLS_VERSION_NUMBER < 0x03000000
+    ret = mbedtls_rsa_rsaes_pkcs1_v15_decrypt(mbedtls_pk_rsa(encryptionData.key), mbedtls_ctr_drbg_random, &encryptionData.ctr_drbg, MBEDTLS_RSA_PRIVATE, &decrypted_size, encrypted, decrypted, sizeof(decrypted));
+#else
     ret = mbedtls_rsa_rsaes_pkcs1_v15_decrypt(mbedtls_pk_rsa(encryptionData.key), mbedtls_ctr_drbg_random, &encryptionData.ctr_drbg, &decrypted_size, encrypted, decrypted, sizeof(decrypted));
+#endif
     if (ret != 0)
     {
         printl(LOG_WARN, "mbedtls_rsa_rsaes_oaep_decrypt failed! %d\n", ret);
@@ -114,7 +118,11 @@ void LoginC2S_encryption_response()
     }
     readBuffer((char *)encrypted, sizeof(encrypted));
     if (readFailed()) return;
+#if MBEDTLS_VERSION_NUMBER < 0x03000000
+    ret = mbedtls_rsa_rsaes_pkcs1_v15_decrypt(mbedtls_pk_rsa(encryptionData.key), mbedtls_ctr_drbg_random, &encryptionData.ctr_drbg, MBEDTLS_RSA_PRIVATE, &decrypted_size, encrypted, decrypted, sizeof(decrypted));
+#else
     ret = mbedtls_rsa_rsaes_pkcs1_v15_decrypt(mbedtls_pk_rsa(encryptionData.key), mbedtls_ctr_drbg_random, &encryptionData.ctr_drbg, &decrypted_size, encrypted, decrypted, sizeof(decrypted));
+#endif
     if (ret != 0)
     {
         printl(LOG_WARN, "mbedtls_rsa_rsaes_oaep_decrypt failed! %d\n", ret);

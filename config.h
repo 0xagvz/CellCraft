@@ -9,8 +9,12 @@
 #define COMPRESSION
 #define COMPRESSION_THRESHOLD 2048
 
+#ifndef UCRAFT_NO_ONLINE
 #define ONLINE_MODE
+#ifndef UCRAFT_NO_AUTH
 #define ONLINE_MODE_AUTH // Requires ONLINE_MODE which authticates to mojang servers.
+#endif
+#endif
 
 #define SPAWN_X 0.00
 #define SPAWN_Y 26.00
