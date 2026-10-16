@@ -1,7 +1,9 @@
 #ifndef _CONFIG__ADV_H
 #define _CONFIG__ADV_H
 
-#define ENDIAN 1 // 1: little, 0:big
+#ifndef ENDIAN
+    #define ENDIAN 1 // 1: little, 0:big
+#endif
 
 #define TICK_TIME_MS 5
 #define MEM_CHUNK_SIZE 256    // Allocation granularity
