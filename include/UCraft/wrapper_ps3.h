@@ -108,7 +108,13 @@ static inline int U_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *
 };
 
 static inline int U_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
-    return accept(sockfd, addr, addrlen);
+    s32 r;
+    socklen_t len = (addr != NULL && addrlen != NULL) ? *addrlen : 0;
+    r = netAccept(sockfd & (int)~(unsigned int)SOCKET_FD_MASK,
+                  addr, (addr != NULL && addrlen != NULL) ? &len : NULL);
+    if (r < 0) return lv2errno(r);
+    if (addr != NULL && addrlen != NULL) *addrlen = len;
+    return (int)((unsigned int)r | SOCKET_FD_MASK);
 };
 
 static inline int U_getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen){

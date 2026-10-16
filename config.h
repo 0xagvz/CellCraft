@@ -29,6 +29,6 @@
 #define CLIENT_VERSION "26.1.2"
 #define PROTOCOL_VERSION 775
 #define LONG_PROTOCOL_VERSION "\\u00A7c UCraft: 26.1.2"
-#define MOTD "\\u00A7a\\u00A7lUCraft\\u00A7r\\u00A7l server written in C :D"
+#define MOTD "\\u00A7a\\u00A7lUCraft PS3\\u00A7r\\u00A7l server alive in a PS3!!"
 
 #endif

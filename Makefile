@@ -32,12 +32,47 @@ CFLAGS := -mcpu=cell -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter \
           $(INCLUDES) $(DEFINES)
 
 LDFLAGS := -L$(PSL1GHT)/ppu/lib -L$(PS3DEV)/portlibs/ppu/lib
-LIBS    := -lnet -lsysmodule -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -lz
+LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -lz
 
 all: $(TARGET)
 
+TITLE     := UCraft
+APPID     := UCRAFT001
+CONTENTID := UP0001-$(APPID)_00-0000000000000000
+SFOXML    := $(PS3DEV)/bin/sfo.xml
+ICON0     := $(PS3DEV)/bin/ICON0.PNG
+
+SPRXLINKER      := $(PS3DEV)/bin/sprxlinker
+MAKE_SELF       := $(PS3DEV)/bin/make_self
+MAKE_SELF_NPDRM := $(PS3DEV)/bin/make_self_npdrm
+SFO             := $(PS3DEV)/bin/sfo
+PKGTOOL         := $(PS3DEV)/bin/pkg
+
+STRIPPED := $(BUILDDIR)/UCraft_stripped.elf
+SELF     := $(BUILDDIR)/UCraft.self
+PKGFILE  := $(BUILDDIR)/UCraft.pkg
+
+self: $(SELF)
+$(SELF): $(TARGET)
+	$(STRIP) $< -o $(STRIPPED)
+	$(SPRXLINKER) $(STRIPPED)
+	$(MAKE_SELF) $(STRIPPED) $@
+
+pkg: $(PKGFILE)
+$(PKGFILE): $(SELF)
+	mkdir -p $(BUILDDIR)/pkg/USRDIR
+	cp $(ICON0) $(BUILDDIR)/pkg/ICON0.PNG
+	$(MAKE_SELF_NPDRM) $(STRIPPED) $(BUILDDIR)/pkg/USRDIR/EBOOT.BIN $(CONTENTID) >> /dev/null
+	$(SFO) --title "$(TITLE)" --appid "$(APPID)" -f $(SFOXML) $(BUILDDIR)/pkg/PARAM.SFO
+	$(PKGTOOL) --contentid $(CONTENTID) $(BUILDDIR)/pkg/ $@ >> /dev/null
+
 $(TARGET): $(OBJS)
 	$(CC) $^ $(LDFLAGS) $(LIBS) -o $@
+
+FLAGSTAMP := $(BUILDDIR)/.flags
+$(FLAGSTAMP): | $(BUILDDIR)
+	@echo "$(DEFINES)" | cmp -s - $@ || echo "$(DEFINES)" > $@
+$(OBJS): $(FLAGSTAMP)
 
 $(BUILDDIR)/%.o: src/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -51,4 +86,4 @@ $(BUILDDIR):
 clean:
 	rm -rf $(BUILDDIR)
 
-.PHONY: all clean
+.PHONY: all clean self pkg

@@ -6,6 +6,9 @@
 #include <time.h>
 
 #include "wrapper.h"
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#include <sysutil/sysutil.h>
+#endif
 #include "c2s.h"
 #include "config.h"
 #include "player.h"
@@ -582,6 +585,9 @@ int UCraftStart(uint8_t *cleanup_flag)
         {
             break;
         }
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+        sysUtilCheckCallback();
+#endif
         memcpy(&set, playerGetSet(), sizeof(fd_set));
         rv = U_select(max_sock + 1, &set, NULL, NULL, &timeout);
         if (rv == -1)

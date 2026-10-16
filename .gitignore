@@ -7,3 +7,4 @@ out/
 *.elf
 *.self
 *.pkg
+*.BIN
