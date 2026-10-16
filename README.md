@@ -21,6 +21,10 @@ You will need to have HEN or CFW in your ps3
 - **Online-mode encryption** — authenticated logins through mbedTLS, or offline mode without it
 - **Tiny footprint** — fits comfortably in the PS3's memory
 
+## Limitations
+
+- **Worlds are not saved.** Terrain regenerates identically from the seed on every boot, but blocks you break or place only live in RAM and are lost when the server stops.
+
 ## Building for PS3
 
 You need the PS3 toolchain with PSL1GHT and portlibs (zlib, mbedTLS) installed, e.g. at `/usr/local/ps3dev`:
