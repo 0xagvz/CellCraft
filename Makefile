@@ -67,6 +67,18 @@ $(PKGFILE): $(SELF)
 	$(SFO) --title "$(TITLE)" --appid "$(APPID)" -f $(SFOXML) $(BUILDDIR)/pkg/PARAM.SFO
 	$(PKGTOOL) --contentid $(CONTENTID) $(BUILDDIR)/pkg/ $@ >> /dev/null
 
+# Release: genera los dos .pkg listos para subir a GitHub.
+RELEASEDIR := release
+release: release-offline release-online
+release-offline:
+	$(MAKE) clean pkg
+	mkdir -p $(RELEASEDIR)
+	cp $(PKGFILE) $(RELEASEDIR)/CellCraft-offline.pkg
+release-online:
+	$(MAKE) clean pkg AUTH=1
+	mkdir -p $(RELEASEDIR)
+	cp $(PKGFILE) $(RELEASEDIR)/CellCraft-online.pkg
+
 $(TARGET): $(OBJS)
 	$(CC) $^ $(LDFLAGS) $(LIBS) -o $@
 
@@ -87,4 +99,4 @@ $(BUILDDIR):
 clean:
 	rm -rf $(BUILDDIR)
 
-.PHONY: all clean self pkg
+.PHONY: all clean self pkg release release-offline release-online

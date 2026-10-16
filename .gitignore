@@ -1,4 +1,6 @@
 build/
+build-ps3/
+release/
 out/
 .vscode/
 .vs/
