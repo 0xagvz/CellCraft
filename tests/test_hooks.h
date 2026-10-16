@@ -1,5 +1,5 @@
-#ifndef UCRAFT_TEST_HOOKS_H
-#define UCRAFT_TEST_HOOKS_H
+#ifndef CELLCRAFT_TEST_HOOKS_H
+#define CELLCRAFT_TEST_HOOKS_H
 #include "config.h"
 #include <stddef.h>
 #ifdef ONLINE_MODE

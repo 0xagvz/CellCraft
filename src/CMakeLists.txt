@@ -1,5 +1,5 @@
-add_executable(${PROJECT_NAME} main.c UCraft.c socketio.c player.c c2s.c s2c.c util.c log.c  encryption.c https.c game.c world.c blocks.c storage.c)
-target_link_libraries(${PROJECT_NAME} PRIVATE ucraft_options)
+add_executable(${PROJECT_NAME} main.c CellCraft.c socketio.c player.c c2s.c s2c.c util.c log.c  encryption.c https.c game.c world.c blocks.c storage.c)
+target_link_libraries(${PROJECT_NAME} PRIVATE cellcraft_options)
 
 
 if(UNIX)

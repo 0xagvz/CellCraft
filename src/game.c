@@ -7,7 +7,7 @@
 #include "wrapper.h"
 #include "blocks.h"
 #include "blocks/items.h"
-#include "UCraft.h"
+#include "CellCraft.h"
 #include "recipes.h"
 
 static game_data_t gameData;

@@ -1,98 +1,65 @@
-# UCraft
-A lightweight **Minecraft server implementation written in C**, designed for machines with limited resources.
+# CellCraft
+A lightweight **Minecraft server that runs on PlayStation 3**, ported from UCraft (a Minecraft server implementation written in C, designed for machines with limited resources).
 
-<p align="center">
-  <img src="screenshot.png" alt="UCraft terrain generation" width="640" />
-</p>
-<p align="center"><em>Procedurally generated terrain</em></p>
 
-UCraft implements just the bare essentials of the Minecraft protocol: clients can join,
+CellCraft implements just the bare essentials of the Minecraft protocol: clients can join,
 explore a procedurally generated world, chat, and break and place blocks. It provides the
 foundation for **very primitive Minecraft gameplay** — not a full server replacement.
 
-Currently supports **Minecraft 26.1.2** clients.
+Currently supports **Minecraft 26.2** clients
 
 ## Features
 
+- **Runs on real PS3 hardware** (and RPCS3) — LV2 networking through a dedicated `wrapper_ps3.h` portability layer
 - **Procedural terrain generation** — an explorable world generated on demand as players move around
 - **Primitive Minecraft gameplay** — walk around, chat with other players, and break/place blocks
 - **Online-mode encryption** — authenticated logins through mbedTLS, or offline mode without it
-- **Tiny footprint** — ~46K-byte binary without authentication (~70K with), and ~50K bytes of memory on average (for a single player)
+- **Tiny footprint** — fits comfortably in the PS3's memory
 
-## Building
+## Building for PS3
 
-The server was built and tested on Linux. On Windows, MSVC is required and on macOS, Xcode Command Line Tools and CMake are required.
+You need the PS3 toolchain with PSL1GHT and portlibs (zlib, mbedTLS) installed, e.g. at `/usr/local/ps3dev`:
 
 ```bash
-sudo apt install git build-essential cmake make
-git clone https://github.com/vimpop/UCraft/
-cd UCraft && mkdir build && cd build
-cmake ..
-make
+git clone https://github.com/0xagvz/CellCraft.git
+cd CellCraft
+make            # server without Mojang auth (offline-capable clients)
+make pkg        # builds build-ps3/CellCraft.pkg, installable on PS3
 ```
-This produces an executable named `UCraft` in `build/src`.
 
-Pre-built binaries are also available as artifacts of the [GitHub Actions](https://github.com/vimpop/UCraft/actions) workflow runs.
+The package installs as `CellCraft` (`CELLCRAFT`) and listens on `*:25565`.
+Run it and connect with a Minecraft 26.2 client in offline mode (or online mode with `AUTH=1`).
 
-## Regression tests
+```bash
+git submodule update --init 3rdparty/lwjson   # only needed for AUTH=1
+```
 
-The CTest suite compiles the real gameplay, inventory, and block-storage code.
-Tests use fixed fixtures and recorded messages, so they need no Minecraft client
-or account.
+## Building for PC (debug)
 
-Run the portable suite on Linux, macOS, or Windows:
+The original CMake build still works and is handy to tell port bugs apart from protocol bugs:
 
 ```bash
 git submodule update --init --recursive
-cmake -S . -B build/test -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
-cmake --build build/test --config Release --parallel
-ctest --test-dir build/test -C Release --output-on-failure --no-tests=error
+cmake -S . -B build/pc -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+cmake --build build/pc --parallel
+./build/pc/src/CellCraft
 ```
 
-On Linux, add `-DUCRAFT_TCP_TESTS=ON` to include the Python TCP smoke test. It
-checks status, ping, malformed frames, concurrent clients, and graceful shutdown.
-The test uses port 25565 by default and does not contact Mojang.
+## Porting notes
 
-For memory and undefined-behavior checks on Linux:
-
-```bash
-cmake -S . -B build/sanitizers -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DUCRAFT_TCP_TESTS=ON -DUCRAFT_SANITIZERS=ON
-cmake --build build/sanitizers --parallel
-ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 \
-  ctest --test-dir build/sanitizers --output-on-failure --no-tests=error
-```
-
-The GitHub Actions matrix runs the suite with GCC, Clang, and MSVC, plus Linux
-sanitizers. JUnit results and logs are uploaded as artifacts. Use
-`-DBUILD_TESTING=OFF` to build only the server.
-
-Add gameplay cases in `tests/game_tests.c` and register new names in
-`tests/CMakeLists.txt`.
-
-## Running
-
-```bash
-./src/UCraft
-[INFO]: Listening on *:25565
-[INFO]: UCraft server started!
-```
-
-Then connect to `localhost:25565` with a Minecraft **26.1.2** client.
-
-## Implementations
-
-- **Lightbulb** (BL602 MCU) — implementation details [here](https://github.com/vimpop/UCraft-bl602)
-- **Samsung C410W Printer** (ARM BE MCU) - implementation details [here](https://github.com/vimpop/UCraft-printer)
-- **Italian ISP Router** (Broadcom BCM63138) - implementation details [here](https://github.com/ZioCook/UCraft/tree/be2b5235e73acf73aa5cbaa9e456819cb0f58850) by [ZioCook](https://github.com/ZioCook)
-
-*Your implementation could also be here! (feel free to open up a issue with your implementation)*
+- `include/CellCraft/wrapper_ps3.h` maps every `U_*` call to PSL1GHT (`net*` API, `SO_NBIO` non-blocking, `lv2errno` translation). The `FD_*` macros strip `SOCKET_FD_MASK` because LV2 indexes raw descriptors.
+- PS3 is big-endian: the build passes `-DENDIAN=0`.
+- `signal(SIGINT)` does not exist on PS3: shutdown goes through a `sysutil` callback (`SYSUTIL_EXIT_GAME`).
+- Logs go to the PS3 TTY (`sysTtyWrite`, visible via ps3load / RPCS3).
+- `lwjson` (2 pure-C files) compiles unmodified with `ppu-gcc`.
 
 ## Credits
 
-- [Bixilon](https://bixilon.de/en) for help with major parts of the Minecraft protocol
-- [wiki.vg](https://wiki.vg/Main_Page) for documenting Minecraft's protocol
+- [vimpop](https://github.com/vimpop/UCraft) — creator of **UCraft**, the upstream project this is ported from. All game, protocol and world code is theirs.
+- [Mojang](https://www.minecraft.net) — creators of Minecraft.
+- [PSL1GHT](https://github.com/ps3dev/PSL1GHT) — the open-source PS3 SDK by the ps3dev team that makes this port possible.
+- [Bixilon](https://bixilon.de/en) and [wiki.vg](https://wiki.vg/Main_Page) — for documenting Minecraft's protocol (via upstream UCraft).
 
 ## License
 
-[MIT](LICENSE.txt)
+[MIT](LICENSE.txt) (same as upstream UCraft).

@@ -18,7 +18,7 @@ def main():
     for entry in entries:
         path = Path(entry["directory"], entry["file"]).resolve()
         command = entry.get("command", " ".join(entry.get("arguments", [])))
-        if path.parent == root / "src" and "UCRAFT_TEST_HOOKS" not in command:
+        if path.parent == root / "src" and "CELLCRAFT_TEST_HOOKS" not in command:
             selected[str(path)] = entry
     expected = {str(path.resolve()) for path in (root / "src").glob("*.c")}
     if set(selected) != expected:

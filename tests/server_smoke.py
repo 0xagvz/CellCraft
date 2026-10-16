@@ -121,7 +121,7 @@ def run(args):
         probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         probe.bind(("127.0.0.1", port))
 
-    with args.log.open("wb") as log, tempfile.TemporaryDirectory(prefix="ucraft-smoke-") as cwd:
+    with args.log.open("wb") as log, tempfile.TemporaryDirectory(prefix="cellcraft-smoke-") as cwd:
         process = subprocess.Popen([str(args.server.resolve())], cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
         try:
             for payload in (b"\x01\x23\x45\x67\x89\xab\xcd\xef", b"\xfe\xdc\xba\x98\x76\x54\x32\x10"):

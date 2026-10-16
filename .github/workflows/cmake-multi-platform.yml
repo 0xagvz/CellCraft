@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 env:
-  APP_NAME: UCraft
+  APP_NAME: CellCraft
 
 jobs:
   build:
@@ -71,7 +71,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DBUILD_TESTING=ON
-          -DUCRAFT_TCP_TESTS=${{ runner.os == 'Linux' && 'ON' || 'OFF' }}
+          -DCELLCRAFT_TCP_TESTS=${{ runner.os == 'Linux' && 'ON' || 'OFF' }}
           -S ${{ github.workspace }}
 
       - name: Build
@@ -101,11 +101,11 @@ jobs:
           $buildDir = "${{ steps.strings.outputs.build-output-dir }}\src\Release"
           $outDir   = "${{ steps.strings.outputs.staging-dir }}"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
-          $exe = Join-Path $buildDir "UCraft.exe"
-          if (-not (Test-Path $exe)) { throw "UCraft.exe not found in $buildDir" }
+          $exe = Join-Path $buildDir "CellCraft.exe"
+          if (-not (Test-Path $exe)) { throw "CellCraft.exe not found in $buildDir" }
           $dest = Join-Path $outDir "${{ steps.strings.outputs.artifact-name }}.exe"
           Copy-Item $exe $dest -Force
-          Write-Host "Staged UCraft.exe -> $dest"
+          Write-Host "Staged CellCraft.exe -> $dest"
       - name: Stage binary (Linux & macOS)
         if: runner.os == 'Linux' || runner.os == 'macOS'
         shell: bash
@@ -114,7 +114,7 @@ jobs:
           build_dir="${{ steps.strings.outputs.build-output-dir }}/src"
           out_dir="${{ steps.strings.outputs.staging-dir }}"
           mkdir -p "$out_dir"
-          bin_path="$build_dir/UCraft"
+          bin_path="$build_dir/CellCraft"
           test -x "$bin_path"
           dest="${out_dir}/${{ steps.strings.outputs.artifact-name }}"
           cp -f "$bin_path" "$dest"
@@ -144,7 +144,7 @@ jobs:
           cmake -S . -B build
           -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
           -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
-          -DUCRAFT_TCP_TESTS=ON -DUCRAFT_SANITIZERS=ON
+          -DCELLCRAFT_TCP_TESTS=ON -DCELLCRAFT_SANITIZERS=ON
       - name: Build
         run: cmake --build build --parallel 2
       - name: Test
@@ -176,7 +176,7 @@ jobs:
           cmake -S . -B build
           -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
           -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
-          -DUCRAFT_TCP_TESTS=ON -DUCRAFT_COVERAGE=ON
+          -DCELLCRAFT_TCP_TESTS=ON -DCELLCRAFT_COVERAGE=ON
       - name: Analyze production sources
         run: python3 tests/analyze.py --build build
       - name: Build
@@ -211,7 +211,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: dist
-          pattern: UCraft-*
+          pattern: CellCraft-*
           merge-multiple: true
 
       - name: List downloaded files (debug)

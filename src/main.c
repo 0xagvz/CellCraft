@@ -5,16 +5,16 @@
 #include <time.h>
 #include <stdint.h>
 
-#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(CELLCRAFT_PS3)
 #include <sysutil/sysutil.h>
 #else
 #include <signal.h>
 #endif
 
-#include "UCraft.h"
+#include "CellCraft.h"
 static uint8_t cleanup_flag;
 
-#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(CELLCRAFT_PS3)
 static void cleanup_callback(u64 status, u64 param, void *userdata)
 {
   (void)param;
@@ -37,13 +37,13 @@ int main(int argc, char const *argv[])
 {
   (void)argc;
   (void)argv;
-#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(CELLCRAFT_PS3)
   sysUtilRegisterCallback(SYSUTIL_EVENT_SLOT0, cleanup_callback, NULL);
-  int rc = UCraftStart(&cleanup_flag);
+  int rc = CellCraftStart(&cleanup_flag);
   sysUtilUnregisterCallback(SYSUTIL_EVENT_SLOT0);
   return rc;
 #else
   signal(SIGINT, cleanup);
-  return UCraftStart(&cleanup_flag);
+  return CellCraftStart(&cleanup_flag);
 #endif
 }

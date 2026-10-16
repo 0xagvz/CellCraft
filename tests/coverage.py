@@ -16,12 +16,12 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     profiles = sorted((build / "profiles").glob("*.profraw"))
     if not profiles:
-        raise SystemExit("No coverage profiles; run CTest with UCRAFT_COVERAGE=ON first")
+        raise SystemExit("No coverage profiles; run CTest with CELLCRAFT_COVERAGE=ON first")
     merged = output / "merged.profdata"
     subprocess.run([args.llvm_profdata, "merge", "-sparse", *map(str, profiles),
                     "-o", str(merged)], check=True)
-    objects = [build / "src/UCraft", build / "tests/ucraft_source_tests",
-               build / "tests/ucraft_game_tests"]
+    objects = [build / "src/CellCraft", build / "tests/cellcraft_source_tests",
+               build / "tests/cellcraft_game_tests"]
     common = [str(objects[0]), "-object=" + str(objects[1]), "-object=" + str(objects[2]),
               "-instr-profile=" + str(merged),
               "-ignore-filename-regex=(/3rdparty/|/tests/)"]

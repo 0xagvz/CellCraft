@@ -6,14 +6,14 @@ CC      := $(PS3DEV)/ppu/bin/powerpc64-ps3-elf-gcc
 STRIP   := $(PS3DEV)/ppu/bin/powerpc64-ps3-elf-strip
 
 BUILDDIR := build-ps3
-TARGET   := $(BUILDDIR)/UCraft.elf
+TARGET   := $(BUILDDIR)/CellCraft.elf
 
-SRCS := src/main.c src/UCraft.c src/socketio.c src/player.c src/c2s.c \
+SRCS := src/main.c src/CellCraft.c src/socketio.c src/player.c src/c2s.c \
         src/s2c.c src/util.c src/log.c src/encryption.c src/https.c \
         src/game.c src/world.c src/blocks.c src/storage.c
 OBJS := $(SRCS:src/%.c=$(BUILDDIR)/%.o)
 
-INCLUDES := -Iinclude/UCraft -Iinclude/3rdparty -I. \
+INCLUDES := -Iinclude/CellCraft -Iinclude/3rdparty -I. \
             -I$(PSL1GHT)/ppu/include \
             -I$(PS3DEV)/portlibs/ppu/include
 
@@ -25,7 +25,7 @@ OBJS += $(LWJSON_OBJS)
 INCLUDES += -I3rdparty/lwjson/lwjson/src/include
 DEFINES := -DLWJSON_IGNORE_USER_OPTS -DENDIAN=0
 else
-DEFINES := -DUCRAFT_NO_AUTH -DENDIAN=0
+DEFINES := -DCELLCRAFT_NO_AUTH -DENDIAN=0
 endif
 
 CFLAGS := -mcpu=cell -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter \
@@ -36,8 +36,8 @@ LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbe
 
 all: $(TARGET)
 
-TITLE     := UCraft
-APPID     := UCRAFT001
+TITLE     := CellCraft
+APPID     := CELLCRAFT
 CONTENTID := UP0001-$(APPID)_00-0000000000000000
 SFOXML    := $(PS3DEV)/bin/sfo.xml
 ICON0     := $(PS3DEV)/bin/ICON0.PNG
@@ -48,9 +48,9 @@ MAKE_SELF_NPDRM := $(PS3DEV)/bin/make_self_npdrm
 SFO             := $(PS3DEV)/bin/sfo
 PKGTOOL         := $(PS3DEV)/bin/pkg
 
-STRIPPED := $(BUILDDIR)/UCraft_stripped.elf
-SELF     := $(BUILDDIR)/UCraft.self
-PKGFILE  := $(BUILDDIR)/UCraft.pkg
+STRIPPED := $(BUILDDIR)/CellCraft_stripped.elf
+SELF     := $(BUILDDIR)/CellCraft.self
+PKGFILE  := $(BUILDDIR)/CellCraft.pkg
 
 self: $(SELF)
 $(SELF): $(TARGET)

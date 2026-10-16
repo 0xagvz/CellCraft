@@ -9,9 +9,9 @@
 #define COMPRESSION
 #define COMPRESSION_THRESHOLD 2048
 
-#ifndef UCRAFT_NO_ONLINE
+#ifndef CELLCRAFT_NO_ONLINE
 #define ONLINE_MODE
-#ifndef UCRAFT_NO_AUTH
+#ifndef CELLCRAFT_NO_AUTH
 #define ONLINE_MODE_AUTH // Requires ONLINE_MODE which authticates to mojang servers.
 #endif
 #endif
@@ -28,7 +28,7 @@
 
 #define CLIENT_VERSION "26.1.2"
 #define PROTOCOL_VERSION 775
-#define LONG_PROTOCOL_VERSION "\\u00A7c UCraft: 26.1.2"
-#define MOTD "\\u00A7a\\u00A7lUCraft PS3\\u00A7r\\u00A7l server alive in a PS3!!"
+#define LONG_PROTOCOL_VERSION "\\u00A7c CellCraft: 26.1.2"
+#define MOTD "\\u00A7a\\u00A7lCellCraft PS3\\u00A7r\\u00A7l server alive in a PS3!!"
 
 #endif

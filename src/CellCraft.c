@@ -6,7 +6,7 @@
 #include <time.h>
 
 #include "wrapper.h"
-#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(CELLCRAFT_PS3)
 #include <sysutil/sysutil.h>
 #endif
 #include "c2s.h"
@@ -492,7 +492,7 @@ static void s2cHandler()
     gameGlobalTick();
     sendRevertFromGlobalBuffer();
 }
-void UCraftCleanup()
+void CellCraftCleanup()
 {
     printl(LOG_INFO, "Cleaning up!\n");
     // cleanup
@@ -511,7 +511,7 @@ void UCraftCleanup()
     }
     U_wrapperEnd();
 }
-int UCraftStart(uint8_t *cleanup_flag)
+int CellCraftStart(uint8_t *cleanup_flag)
 {
     struct sockaddr_in address;
     int opt = 1;
@@ -538,19 +538,19 @@ int UCraftStart(uint8_t *cleanup_flag)
     if ((server_fd = U_socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printl(LOG_ERROR, "Cannot create socket fd:%d\n", server_fd);
-        UCraftCleanup();
+        CellCraftCleanup();
         return 1;
     }
     if (U_setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
     {
         printl(LOG_ERROR, "setsockopt SOL_SOCKET error fd:%d\n", server_fd);
-        UCraftCleanup();
+        CellCraftCleanup();
         return 1;
     }
     if (U_setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)))
     {
         printl(LOG_ERROR, "setsockopt IPPROTO_TCP error fd:%d\n", server_fd);
-        UCraftCleanup();
+        CellCraftCleanup();
         return 1;
     }
     address.sin_family = AF_INET;
@@ -559,13 +559,13 @@ int UCraftStart(uint8_t *cleanup_flag)
     if (U_bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         printl(LOG_ERROR, "bind error fd:%d\n", server_fd);
-        UCraftCleanup();
+        CellCraftCleanup();
         return 1;
     }
     if (U_listen(server_fd, MAX_PLAYERS + 1) < 0)
     {
         printl(LOG_ERROR, "listen error fd:%d\n", server_fd);
-        UCraftCleanup();
+        CellCraftCleanup();
         return 1;
     }
     printl(LOG_INFO, "Listening on *:%d\n", PORT);
@@ -575,7 +575,7 @@ int UCraftStart(uint8_t *cleanup_flag)
     timeout.tv_usec = 0;
 
     max_sock = server_fd;
-    printl(LOG_INFO, "UCraft server started!\n");
+    printl(LOG_INFO, "CellCraft server started!\n");
     printl(LOG_INFO, "Supported client version: %s\n", CLIENT_VERSION);
     gamePreload();
     while (1)
@@ -585,7 +585,7 @@ int UCraftStart(uint8_t *cleanup_flag)
         {
             break;
         }
-#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(UCRAFT_PS3)
+#if defined(__PPU__) || defined(__PS3__) || defined(__CELLOS_LV2__) || defined(CELLCRAFT_PS3)
         sysUtilCheckCallback();
 #endif
         memcpy(&set, playerGetSet(), sizeof(fd_set));
@@ -610,7 +610,7 @@ int UCraftStart(uint8_t *cleanup_flag)
                 if (U_setsockopt(new_socket, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)))
                 {
                     printl(LOG_ERROR, "setsockopt IPPROTO_TCP error fd:%d\n", new_socket);
-                    UCraftCleanup();
+                    CellCraftCleanup();
                     return 1;
                 }
                 if (new_socket > max_sock)
@@ -686,6 +686,6 @@ int UCraftStart(uint8_t *cleanup_flag)
         main_tick++;
     }
     gameCleanup();
-    UCraftCleanup();
+    CellCraftCleanup();
     return 0;
 }
