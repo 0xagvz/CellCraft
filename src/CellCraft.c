@@ -19,6 +19,7 @@
 #include "enums.h"
 #include "encryption.h"
 #include "https.h"
+#include "ps3ui.h"
 
 int server_fd = -1;
 size_t main_tick = 0;
@@ -578,6 +579,7 @@ int CellCraftStart(uint8_t *cleanup_flag)
     printl(LOG_INFO, "CellCraft server started!\n");
     printl(LOG_INFO, "Supported client version: %s\n", CLIENT_VERSION);
     gamePreload();
+    ps3ui_init();
     while (1)
     {
         uint64_t startms = U_millis();
@@ -674,6 +676,10 @@ int CellCraftStart(uint8_t *cleanup_flag)
             }
         }
         s2cHandler();
+        if ((main_tick % 10) == 0)
+        {
+            ps3ui_draw();
+        }
         uint64_t endms = U_millis();
         if ((endms - startms) < TICK_TIME_MS)
         {
@@ -686,6 +692,7 @@ int CellCraftStart(uint8_t *cleanup_flag)
         main_tick++;
     }
     gameCleanup();
+    ps3ui_end();
     CellCraftCleanup();
     return 0;
 }

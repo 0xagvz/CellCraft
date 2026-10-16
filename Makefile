@@ -10,12 +10,13 @@ TARGET   := $(BUILDDIR)/CellCraft.elf
 
 SRCS := src/main.c src/CellCraft.c src/socketio.c src/player.c src/c2s.c \
         src/s2c.c src/util.c src/log.c src/encryption.c src/https.c \
-        src/game.c src/world.c src/blocks.c src/storage.c
+        src/game.c src/world.c src/blocks.c src/storage.c src/ps3ui.c
 OBJS := $(SRCS:src/%.c=$(BUILDDIR)/%.o)
 
 INCLUDES := -Iinclude/CellCraft -Iinclude/3rdparty -I. \
             -I$(PSL1GHT)/ppu/include \
-            -I$(PS3DEV)/portlibs/ppu/include
+            -I$(PS3DEV)/portlibs/ppu/include \
+            -I$(PS3DEV)/portlibs/ppu/include/freetype2
 
 ifdef AUTH
 LWJSON_SRCS := 3rdparty/lwjson/lwjson/src/lwjson/lwjson.c \
@@ -32,7 +33,7 @@ CFLAGS := -mcpu=cell -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter \
           $(INCLUDES) $(DEFINES)
 
 LDFLAGS := -L$(PSL1GHT)/ppu/lib -L$(PS3DEV)/portlibs/ppu/lib
-LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -lz
+LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -ltiny3d -lrsx -lgcm_sys -lfont3d -lfreetype -lz -lm
 
 all: $(TARGET)
 
@@ -40,7 +41,7 @@ TITLE     := CellCraft
 APPID     := CELLCRAFT
 CONTENTID := UP0001-$(APPID)_00-0000000000000000
 SFOXML    := $(PS3DEV)/bin/sfo.xml
-ICON0     := $(PS3DEV)/bin/ICON0.PNG
+ICON0     := assets/ICON0.PNG
 
 SPRXLINKER      := $(PS3DEV)/bin/sprxlinker
 MAKE_SELF       := $(PS3DEV)/bin/make_self

@@ -24,7 +24,7 @@
 #ifndef TCP_NODELAY
 #define TCP_NODELAY 1
 #endif
-#include <sys/memory.h>
+#include <sys/lv2errno.h>
 
 #undef FD_ZERO
 #undef FD_SET
