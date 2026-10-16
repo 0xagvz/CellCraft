@@ -37,7 +37,7 @@ LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbe
 
 all: $(TARGET)
 
-TITLE     := CellCraft
+TITLE     := CellCraft (by 0xagvz)
 APPID     := CELLCRAFT
 CONTENTID := UP0001-$(APPID)_00-0000000000000000
 SFOXML    := $(PS3DEV)/bin/sfo.xml

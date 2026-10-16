@@ -110,6 +110,8 @@ void ps3ui_draw(void)
         y = DrawFormatString(64.0f, y, "- %s", p->name) + 24.0f;
     }
     DrawFormatString(64.0f, y, "Players online: %u", (unsigned)playerGetActiveCount());
+    SetFontColor(0x808080ff, 0x0);
+    DrawFormatString(64.0f, 464.0f, "Made by 0xagvz");
 
     tiny3d_Flip();
 }
