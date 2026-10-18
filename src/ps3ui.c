@@ -12,6 +12,7 @@
 #include "CellCraft.h"
 #include "player.h"
 #include "config.h"
+#include "log.h"
 
 #include <malloc.h>
 #include "logo_png.h"
@@ -311,7 +312,6 @@ void ps3ui_draw(void)
     player_t *p;
     unsigned int total_players;
     unsigned int tick;
-    int ram_percent;
     int shown = 0;
     float row_y;
     const float left_x = 32.0f;
@@ -324,7 +324,6 @@ void ps3ui_draw(void)
 
     total_players = (unsigned int)playerGetActiveCount();
     tick = (unsigned int)main_tick;
-    ram_percent = percentageOfRamUsed();
 
     tiny3d_Clear(0xff000000, TINY3D_CLEAR_ALL);
     tiny3d_Project2D();
@@ -365,7 +364,7 @@ void ps3ui_draw(void)
     ps3ui_panel(left_x, 112.0f, left_w, 326.0f);
     SetFontSize(15, 15);
     SetFontColor(UI_TEXT, 0x00000000u);
-    DrawFormatString(50.0f, 128.0f, "CONNECTED PLAYERSS");
+    DrawFormatString(50.0f, 128.0f, "CONNECTED PLAYERS");
 
     SetFontSize(12, 12);
     SetFontColor(UI_GREEN, 0x00000000u);
@@ -428,30 +427,24 @@ void ps3ui_draw(void)
     SetFontColor(UI_TEXT, 0x00000000u);
     DrawFormatString(704.0f, 214.0f, "%u", tick);
 
-    /* Memory */
-    ps3ui_panel(right_x, 260.0f, right_w, 178.0f);
-    SetFontSize(15, 15);
+    /* TTY */
+    ps3ui_panel(right_x, 260.0f, right_w, 191.0f);
+    SetFontSize(12, 12);
     SetFontColor(UI_TEXT, 0x00000000u);
-    DrawFormatString(566.0f, 276.0f, "MEMORY USAGE");
-
-    SetFontSize(25, 25);
-    SetFontColor(ram_percent >= 90 ? UI_AMBER : UI_ACCENT, 0x00000000u);
-    DrawFormatString(566.0f, 310.0f, "%d%%", ram_percent);
-
-    SetFontSize(11, 11);
+    DrawFormatString(566.0f, 268.0f, "Console");
+    SetFontSize(9, 9);
     SetFontColor(UI_MUTED, 0x00000000u);
-    DrawFormatString(646.0f, 321.0f, "ALLOCATED");
-
-    ps3ui_rect(566.0f, 347.0f, 234.0f, 10.0f,
-               62000.0f, UI_BAR_BG);
-    if (ram_percent > 0)
     {
-        float fill_w = 234.0f * (float)ram_percent / 100.0f;
-        u32 fill_color = (ram_percent >= 90) ? UI_AMBER : UI_ACCENT;
-        ps3ui_rect(566.0f, 347.0f, fill_w, 10.0f,
-                   60000.0f, fill_color);
+        int i;
+        int count = log_recent_count();
+        int start = count > 16 ? count - 16 : 0;
+        float log_y = 290.0f;
+        for (i = start; i < count; i++)
+        {
+            DrawFormatString(566.0f, log_y, "%.42s", log_recent_line(i));
+            log_y += 11.0f;
+        }
     }
-
     /* Footer */
     ps3ui_rect(32.0f, 458.0f, 784.0f, 1.0f, 61000.0f, UI_BORDER);
     SetFontSize(11, 11);
