@@ -33,7 +33,7 @@ CFLAGS := -mcpu=cell -O2 -std=gnu11 -Wall -Wextra -Wno-unused-parameter \
           $(INCLUDES) $(DEFINES)
 
 LDFLAGS := -L$(PSL1GHT)/ppu/lib -L$(PS3DEV)/portlibs/ppu/lib
-LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -ltiny3d -lrsx -lgcm_sys -lfont3d -lfreetype -lz -lm
+LIBS    := -lnet -lsysmodule -lsysutil -lrt -llv2 -lm -lmbedtls -lmbedx509 -lmbedcrypto -ltiny3d -lrsx -lgcm_sys -lfont3d -lfreetype -lpng -lz -lm
 
 all: $(TARGET)
 
