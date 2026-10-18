@@ -10,7 +10,7 @@ CellCraft implements just the bare essentials of the Minecraft protocol: clients
 explore a procedurally generated world, chat, and break and place blocks. It provides the
 foundation for **very primitive Minecraft gameplay** — not a full server replacement.
 
-Currently supports **Minecraft 26.2** clients
+Currently supports **Minecraft 26.1.2** clients
 
 You will need to have HEN or CFW in your ps3
 ## Features
